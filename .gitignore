@@ -1,33 +1,17 @@
 ```
-# Godot-specific ignores
-.addons/
-.import/
-.bin/
-*.import
-export_presets.cfg
-GodotSharp/
-.vs/
-
 # Build artifacts
-*.so
-*.dylib
-*.dll
-*.exe
-*.o
-*.obj
-*.a
-*.lib
+*.import
+*.remap
+export_presets.cfg
+.runtime/
+.user/
 
 # Dependencies
-node_modules/
-venv/
-.venv/
-__pycache__/
-*.egg-info/
-dist/
-build/
-target/
-.gradle/
+.addons/
+.cache/
+
+# Logs
+*.log
 
 # Environment
 .env
@@ -39,26 +23,10 @@ target/
 .idea/
 *.swp
 *.swo
-*.tmp
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Coverage
-.coverage
-coverage/
-htmlcov/
-
-# Python
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
 
 # Compressed files
 *.zip
@@ -83,4 +51,4 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-```.next/
+```
