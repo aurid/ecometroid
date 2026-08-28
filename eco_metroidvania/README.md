@@ -1,131 +1,138 @@
-# Eco Metroidvania - Game Design Document
+# Eco Metroidvania - Godot 4.2+
 
-## Overview
-A 2D Metroidvania game with a dynamic ecosystem inspired by Rain World. Players explore an interconnected world while surviving in a living ecosystem where creatures hunt, flee, eat, and die independently of the player.
+A 2D Metroidvania game with a dynamic ecosystem inspired by Rain World.
 
-## Core Features
+## Features
 
-### 1. Player Mechanics (Metroidvania Elements)
-- **Movement**: Run, jump, and dash abilities
-- **Energy System**: Limited energy that depletes with dashing and regenerates over time
-- **Exploration**: Unlock new areas as you gain abilities
-- **Combat**: Interact with creatures - hunt or be hunted
+### Player Mechanics
+- **Energy-based movement**: Dash consumes energy, regenerates over time
+- **Survival mechanics**: Eat food to restore energy
+- **Smooth platforming**: Jump, move, and dash controls
 
-### 2. Ecosystem System (Rain World-inspired)
-- **Creature Types**:
-  - **Predators**: Hunt prey and players
-  - **Prey**: Flee from predators, eat food
-  - **Scavengers**: Eat decaying food and weak creatures
+### Dynamic Ecosystem (Rain World-inspired)
+- **Three creature types**:
+  - **Predators** (Red): Hunt prey creatures
+  - **Prey** (Green): Flee from predators
+  - **Scavengers** (Yellow): Eat weak creatures and decaying food
 
-- **Behavior States**:
-  - IDLE: Resting state
-  - WANDER: Random movement
-  - HUNT: Chase target
-  - FLEE: Escape from threats
-  - EAT: Consume food/prey
+- **Creature AI behaviors**:
+  - IDLE: Rest and conserve energy
+  - WANDER: Explore the environment
+  - HUNT: Chase down prey
+  - FLEE: Escape from predators
+  - EAT: Consume food/creatures
   - REST: Recover energy
 
-- **Food Chain**:
-  - Creatures die and become food
-  - Food decays over time
-  - Energy flows through the ecosystem
+- **Food chain**: Dead creatures decay into food sources
+- **Energy system**: All creatures drain energy over time and must eat to survive
 
-### 3. Weather System
-- **Weather Types**:
+### Weather System
+- **Four weather types**:
   - Clear: Normal conditions
-  - Rain: Slightly affects behavior
-  - Storm: Hazardous, creatures seek shelter
+  - Rain: Slightly affects creature behavior
+  - Storm: Hazardous weather, creatures seek shelter
   - Fog: Reduced visibility
 
-- **Dynamic Changes**: Weather changes periodically
-- **Gameplay Impact**: Affects creature behavior and player strategy
+- Weather cycles automatically and affects creature behavior modifiers
 
-### 4. UI & Feedback
-- Energy bar and stats
-- Population counter
-- Weather indicator
-- Ecosystem balance display
-- Status messages
+### UI Display
+- Player energy bar
+- Population counters (Predators | Prey | Scavengers)
+- Current weather display
+- Ecosystem balance indicator
 
 ## Controls
-- **A/D** or **Left/Right Arrow**: Move
-- **Space**: Jump
-- **K** or **Shift**: Dash (consumes energy)
-- **E**: Interact
-- **Right Click**: Spawn creature (debug)
-- **Tab**: Show ecosystem status (debug)
 
-## File Structure
+| Key | Action |
+|-----|--------|
+| A | Move Left |
+| D | Move Right |
+| Space | Jump |
+| X | Dash (consumes energy) |
+| E | Interact |
+| Right-click | Spawn random creature |
+
+## Installation
+
+1. Open Godot 4.2 or later
+2. Click "Import" 
+3. Navigate to the `eco_metroidvania` folder
+4. Select `project.godot`
+5. Click "Import & Edit"
+6. Press F5 to run
+
+## How to Play
+
+1. **Survive**: Keep your energy up by eating food (green orbs)
+2. **Explore**: Move around the map using WASD and Space
+3. **Dash**: Use X to dash quickly (costs energy)
+4. **Observe**: Watch the ecosystem in action:
+   - Predators hunt prey
+   - Prey flee from predators
+   - Creatures die from starvation or being eaten
+   - Dead creatures become food
+   - Weather changes affect behavior
+
+5. **Interact**: Right-click anywhere to spawn additional creatures
+
+## Project Structure
+
 ```
 eco_metroidvania/
-├── project.godot              # Project configuration
-├── scenes/
-│   ├── main.tscn             # Main game scene
-│   ├── player/
-│   │   └── player.tscn       # Player scene
-│   ├── creatures/
-│   │   └── creature.tscn     # Creature scene
-│   ├── environment/
-│   │   └── food.tscn         # Food item scene
-│   └── ui/
-│       └── game_ui.tscn      # UI scene
+├── project.godot          # Project configuration
+├── icon.svg               # Game icon
 ├── scripts/
-│   ├── main.gd               # Main scene controller
+│   ├── main.gd           # Main scene controller
 │   ├── player/
-│   │   └── player.gd         # Player logic
+│   │   └── player.gd     # Player controller
 │   ├── creatures/
-│   │   └── creature.gd       # Creature AI
+│   │   └── creature.gd   # Creature AI
 │   ├── environment/
-│   │   └── food.gd           # Food decay logic
+│   │   └── food.gd       # Food/decay system
 │   ├── systems/
-│   │   ├── ecosystem_manager.gd  # Ecosystem management
-│   │   └── weather_system.gd     # Weather control
+│   │   ├── ecosystem_manager.gd  # Ecosystem orchestration
+│   │   └── weather_system.gd     # Weather cycles
 │   └── ui/
-│       └── game_ui.gd        # UI logic
-└── assets/
-    ├── sprites/              # Game sprites
-    └── audio/                # Sound effects and music
+│       └── game_ui.gd    # HUD interface
+└── scenes/
+    └── main.tscn         # Main game scene
 ```
-
-## Getting Started
-
-1. Open Godot 4.2+
-2. Import the project folder
-3. Open `scenes/main.tscn`
-4. Press F5 to run
-
-## Gameplay Loop
-
-1. **Explore**: Navigate the metroidvania world
-2. **Survive**: Manage energy, avoid predators
-3. **Interact**: Hunt creatures or observe the ecosystem
-4. **Adapt**: Weather changes affect strategy
-5. **Progress**: Unlock new areas and abilities
 
 ## Ecosystem Balance
 
-The game tracks ecosystem health:
-- **Balanced** (0.5-1.5 predator/prey ratio): Healthy ecosystem
-- **Declining** (<0.5): Too few predators
-- **Thriving** (>1.5): Too many predators
+The ecosystem balance is calculated as: `predators / prey`
+- **< 0.5**: Declining (too few predators)
+- **0.5 - 1.5**: Balanced
+- **> 1.5**: Thriving (many predators)
 
-Players can influence the ecosystem by:
-- Hunting specific creatures
-- Leaving food sources
-- Protecting certain species
+The system self-regulates as:
+- Too many predators → prey dies out → predators starve
+- Too few predators → prey multiplies → more food for predators
+- Scavengers clean up weak creatures and carcasses
 
-## Future Enhancements
+## Customization
 
-- [ ] Add more creature types with unique behaviors
-- [ ] Implement shelter system for storms
-- [ ] Add player upgrades and abilities
-- [ ] Create interconnected map with locked areas
-- [ ] Add sleeping/shelter mechanics like Rain World
-- [ ] Implement karma/progression system
-- [ ] Add more weather effects
-- [ ] Create diverse biomes
-- [ ] Add sound effects and music
-- [ ] Create sprite artwork
+Edit these values in the scripts to customize gameplay:
 
-## Credits
-Created as a demonstration of a dynamic ecosystem in a Metroidvania framework.
+**Player** (`scripts/player/player.gd`):
+- `speed`: Movement speed
+- `jump_velocity`: Jump height
+- `dash_speed`, `dash_duration`: Dash mechanics
+- `energy_drain_rate`, `energy_regen_rate`: Energy system
+
+**Creatures** (`scripts/creatures/creature.gd`):
+- `max_energy`, `energy_drain_rate`: Survival mechanics
+- `move_speed`, `detection_range`: Behavior parameters
+- `eat_rate`: How much energy gained from eating
+
+**Ecosystem** (`scripts/systems/ecosystem_manager.gd`):
+- `max_creatures`: Population cap
+- Spawn chances for each creature type
+
+**Weather** (`scripts/systems/weather_system.gd`):
+- `weather_duration`, `clear_duration`: Cycle timing
+- Weather probabilities in `_change_weather()`
+
+## License
+
+Free to use and modify for your projects!

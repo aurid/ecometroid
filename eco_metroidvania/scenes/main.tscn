@@ -2,18 +2,18 @@
 <resource_file major="4" minor="2">
   <node name="Main" type="Node2D">
     <property name="script" type="Script" resource_path="res://scripts/main.gd"/>
-    
+
     <!-- Player Node -->
     <node name="Player" type="CharacterBody2D">
       <property name="position" type="Vector2">400, 300</property>
       <property name="collision_layer" value="1"/>
       <property name="collision_mask" value="6"/>
-      
+      <property name="script" type="Script" resource_path="res://scripts/player/player.gd"/>
+
       <node name="Sprite2D" type="Sprite2D">
-        <property name="texture" type="Null"/>
         <property name="modulate" type="Color">0, 1, 0, 1</property>
       </node>
-      
+
       <node name="CollisionShape2D" type="CollisionShape2D">
         <property name="shape" type="RectangleShape2D">
           <resource local_to_scene="false">
@@ -21,94 +21,49 @@
           </resource>
         </property>
       </node>
-      
+
       <node name="Camera2D" type="Camera2D">
         <property name="current" type="bool">true</property>
       </node>
     </node>
-    
+
     <!-- Ecosystem Manager -->
     <node name="EcosystemManager" type="Node">
       <property name="script" type="Script" resource_path="res://scripts/systems/ecosystem_manager.gd"/>
     </node>
-    
+
     <!-- Weather System -->
     <node name="WeatherSystem" type="Node2D">
       <property name="script" type="Script" resource_path="res://scripts/systems/weather_system.gd"/>
-      
-      <node name="RainParticles" type="GPUParticles2D">
-        <property name="position" type="Vector2">960, 540</property>
-        <property name="emitting" type="bool">false</property>
-        <property name="amount" type="int">500</property>
-        <property name="lifetime" type="float">2.0</property>
-        <property name="scale" type="float">2.0</property>
-      </node>
-      
-      <node name="FogTexture" type="ColorRect">
-        <property name="offset_left" type="float">0</property>
-        <property name="offset_top" type="float">0</property>
-        <property name="offset_right" type="float">1920</property>
-        <property name="offset_bottom" type="float">1080</property>
-        <property name="color" type="Color">0.7, 0.7, 0.7, 0</property>
-        <property name="visible" type="bool">false</property>
-      </node>
-      
-      <node name="LightningTimer" type="Timer">
-        <property name="wait_time" type="float">5.0</property>
-        <property name="one_shot" type="bool">true</property>
-      </node>
     </node>
-    
-    <!-- TileMap for Environment -->
-    <node name="TileMap" type="TileMap">
-      <property name="cell_size" type="Vector2">32, 32</property>
-    </node>
-    
+
     <!-- UI Layer -->
     <node name="UI" type="CanvasLayer">
       <property name="script" type="Script" resource_path="res://scripts/ui/game_ui.gd"/>
-      
-      <node name="EnergyBar" type="TextureProgressBar">
+
+      <node name="VBoxContainer" type="VBoxContainer">
         <property name="offset_left" type="float">20</property>
         <property name="offset_top" type="float">20</property>
         <property name="offset_right" type="float">220</property>
-        <property name="offset_bottom" type="float">40</property>
-        <property name="value" type="float">100</property>
-        <property name="max_value" type="float">100</property>
+        <property name="offset_bottom" type="float">150</property>
+
+        <node name="EnergyLabel" type="Label">
+          <property name="text" type="String">Energy: 100/100</property>
+        </node>
+
+        <node name="PopulationLabel" type="Label">
+          <property name="text" type="String">Creatures: 0</property>
+        </node>
+
+        <node name="WeatherLabel" type="Label">
+          <property name="text" type="String">Weather: Clear</property>
+        </node>
+
+        <node name="EcosystemLabel" type="Label">
+          <property name="text" type="String">Ecosystem: Balanced</property>
+        </node>
       </node>
-      
-      <node name="EnergyLabel" type="Label">
-        <property name="offset_left" type="float">20</property>
-        <property name="offset_top" type="float">45</property>
-        <property name="offset_right" type="float">200</property>
-        <property name="offset_bottom" type="float">65</property>
-        <property name="text" type="String">Energy: 100/100</property>
-      </node>
-      
-      <node name="PopulationLabel" type="Label">
-        <property name="offset_left" type="float">20</property>
-        <property name="offset_top" type="float">70</property>
-        <property name="offset_right" type="float">200</property>
-        <property name="offset_bottom" type="float">90</property>
-        <property name="text" type="String">Creatures: 0</property>
-      </node>
-      
-      <node name="WeatherLabel" type="Label">
-        <property name="offset_left" type="float">20</property>
-        <property name="offset_top" type="float">95</property>
-        <property name="offset_right" type="float">200</property>
-        <property name="offset_bottom" type="float">115</property>
-        <property name="text" type="String">Weather: Clear</property>
-      </node>
-      
-      <node name="EcosystemLabel" type="Label">
-        <property name="offset_left" type="float">20</property>
-        <property name="offset_top" type="float">120</property>
-        <property name="offset_right" type="float">200</property>
-        <property name="offset_bottom" type="float">140</property>
-        <property name="text" type="String">Ecosystem: Balanced</property>
-      </node>
-      
+
       <node name="MessageLabel" type="Label">
         <property name="offset_left" type="float">760</property>
         <property name="offset_top" type="float">500</property>

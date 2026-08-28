@@ -15,21 +15,8 @@ var target_intensity: float = 0.0
 signal weather_changed(new_weather: WeatherType)
 signal intensity_changed(new_intensity: float)
 
-@onready var rain_particles: GPUParticles2D = $RainParticles
-@onready var fog_texture: ColorRect = $FogTexture
-@onready var lightning_timer: Timer = $LightningTimer
-
 func _ready() -> void:
 	weather_timer = clear_duration
-	
-	if rain_particles:
-		rain_particles.emitting = false
-	
-	if fog_texture:
-		fog_texture.visible = false
-	
-	if lightning_timer:
-		lightning_timer.timeout.connect(_on_lightning_timeout)
 
 func _process(delta: float) -> void:
 	weather_timer -= delta
@@ -42,8 +29,6 @@ func _process(delta: float) -> void:
 	if intensity != target_intensity:
 		intensity = move_toward(intensity, target_intensity, delta * 0.5)
 		intensity_changed.emit(intensity)
-		
-		_update_visuals()
 
 func _change_weather() -> void:
 	var rand = randf()
@@ -66,57 +51,17 @@ func _change_weather() -> void:
 		target_intensity = 0.4
 	
 	weather_changed.emit(current_weather)
-	_update_visuals()
-
-func _update_visuals() -> void:
-	match current_weather:
-		WeatherType.CLEAR:
-			if rain_particles:
-				rain_particles.emitting = false
-			if fog_texture:
-				fog_texture.visible = false
-		
-		WeatherType.RAIN:
-			if rain_particles:
-				rain_particles.emitting = true
-				rain_particles.amount = int(500 * intensity)
-			if fog_texture:
-				fog_texture.visible = false
-		
-		WeatherType.STORM:
-			if rain_particles:
-				rain_particles.emitting = true
-				rain_particles.amount = int(800 * intensity)
-			if fog_texture:
-				fog_texture.visible = false
-			if lightning_timer and not lightning_timer.is_running():
-				lightning_timer.start(randf_range(3.0, 8.0))
-		
-		WeatherType.FOG:
-			if rain_particles:
-				rain_particles.emitting = false
-			if fog_texture:
-				fog_texture.visible = true
-				fog_texture.color = Color(0.7, 0.7, 0.7, intensity * 0.5)
-
-func _on_lightning_timeout() -> void:
-	# Flash effect for lightning
-	if fog_texture:
-		fog_texture.color = Color(1.0, 1.0, 1.0, 0.8)
-		await get_tree().create_timer(0.1).timeout
-		fog_texture.color = Color(0.7, 0.7, 0.7, intensity * 0.5)
 
 func get_weather_modifier() -> float:
-	# Returns a modifier for creature behavior based on weather
 	match current_weather:
 		WeatherType.CLEAR:
 			return 1.0
 		WeatherType.RAIN:
-			return 0.8  # Creatures slow down slightly
+			return 0.8
 		WeatherType.STORM:
-			return 0.5  # Creatures seek shelter
+			return 0.5
 		WeatherType.FOG:
-			return 0.9  # Reduced visibility
+			return 0.9
 	return 1.0
 
 func is_hazardous() -> bool:

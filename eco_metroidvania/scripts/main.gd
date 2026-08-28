@@ -3,8 +3,7 @@ extends Node2D
 @onready var player: Player = $Player
 @onready var ecosystem_manager: EcosystemManager = $EcosystemManager
 @onready var weather_system: WeatherSystem = $WeatherSystem
-@onready var camera: Camera2D = $Camera2D
-@onready var tile_map: TileMap = $TileMap
+@onready var camera: Camera2D = $Player/Camera2D
 
 func _ready() -> void:
 	# Add systems to groups for UI access
@@ -14,10 +13,6 @@ func _ready() -> void:
 	
 	# Initialize ecosystem with some creatures
 	_initialize_ecosystem()
-	
-	# Setup camera to follow player
-	if camera and player:
-		camera.follow_smoothing = 5.0
 
 func _initialize_ecosystem() -> void:
 	# Spawn initial creatures
@@ -47,13 +42,8 @@ func _initialize_ecosystem() -> void:
 		ecosystem_manager.spawn_food(Vector2(x, y), randf_range(15, 30))
 
 func _process(_delta: float) -> void:
-	# Update camera to follow player
-	if camera and player:
-		camera.global_position = player.global_position
-	
 	# Check for weather hazards
 	if weather_system.is_hazardous() and player:
-		# Storm could damage player or affect gameplay
 		pass
 
 func _input(event: InputEvent) -> void:
@@ -68,4 +58,3 @@ func _input(event: InputEvent) -> void:
 		print("Creatures: ", ecosystem_manager.get_creature_count())
 		print("Food Sources: ", ecosystem_manager.get_food_count())
 		print("Balance: ", ecosystem_manager.ecosystem_balance)
-		print("Weather: ", WeatherSystem.WeatherType.keys()[weather_system.current_weather])
