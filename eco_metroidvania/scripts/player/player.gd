@@ -13,9 +13,6 @@ var is_dashing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
-
 # Energy system (Rain World inspired)
 var energy: float = 100.0
 var max_energy: float = 100.0
@@ -24,9 +21,6 @@ var energy_regen_rate: float = 5.0
 
 signal energy_changed(new_energy: float)
 signal died
-
-func _ready() -> void:
-	pass
 
 func _physics_process(delta: float) -> void:
 	# Handle dash cooldown
@@ -70,10 +64,6 @@ func _physics_process(delta: float) -> void:
 			velocity.x = direction * speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed * 0.2)
-	
-	# Flip sprite based on direction
-	if direction != 0:
-		sprite.flip_h = direction < 0
 	
 	move_and_slide()
 

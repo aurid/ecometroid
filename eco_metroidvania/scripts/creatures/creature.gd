@@ -21,15 +21,11 @@ var state_timer: float = 0.0
 signal died
 signal energy_changed(new_energy: float)
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
-@onready var detection_area: Area2D = $DetectionArea
-@onready var state_label: Label = $StateLabel
-
 func _ready() -> void:
 	current_energy = max_energy
-	_update_energy_display()
 	
+	# Setup detection area if it exists
+	var detection_area = get_node_or_null("DetectionArea")
 	if detection_area:
 		detection_area.body_entered.connect(_on_body_entered)
 		detection_area.body_exited.connect(_on_body_exited)
@@ -37,7 +33,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Drain energy over time
 	current_energy -= energy_drain_rate * delta
-	_update_energy_display()
+	energy_changed.emit(current_energy)
 	
 	if current_energy <= 0:
 		die()
@@ -93,9 +89,6 @@ func _update_state(delta: float) -> void:
 func _change_state(new_state: BehaviorState) -> void:
 	current_state = new_state
 	state_timer = randf_range(2.0, 5.0)
-	
-	if state_label:
-		state_label.text = BehaviorState.keys()[new_state]
 
 func _apply_behavior(delta: float) -> void:
 	match current_state:
@@ -108,20 +101,18 @@ func _apply_behavior(delta: float) -> void:
 			
 			velocity.x = wander_direction.x * move_speed * 0.5
 			
-			if wander_direction.x > 0:
-				sprite.flip_h = true
-			elif wander_direction.x < 0:
-				sprite.flip_h = false
+			var sprite = get_node_or_null("Sprite2D")
+			if sprite:
+				sprite.flip_h = wander_direction.x < 0
 		
 		BehaviorState.HUNT:
 			if target and is_instance_valid(target):
 				var direction = (target.global_position - global_position).normalized()
 				velocity.x = direction.x * move_speed
 				
-				if direction.x > 0:
-					sprite.flip_h = true
-				elif direction.x < 0:
-					sprite.flip_h = false
+				var sprite = get_node_or_null("Sprite2D")
+				if sprite:
+					sprite.flip_h = direction.x < 0
 				
 				# Try to eat if close enough
 				if global_position.distance_to(target.global_position) < 30:
@@ -132,10 +123,9 @@ func _apply_behavior(delta: float) -> void:
 				var direction = (global_position - target.global_position).normalized()
 				velocity.x = direction.x * move_speed * 1.2
 				
-				if direction.x > 0:
-					sprite.flip_h = true
-				elif direction.x < 0:
-					sprite.flip_h = false
+				var sprite = get_node_or_null("Sprite2D")
+				if sprite:
+					sprite.flip_h = direction.x < 0
 		
 		BehaviorState.EAT:
 			velocity.x = move_toward(velocity.x, 0, move_speed * 0.5)
@@ -155,7 +145,6 @@ func _on_body_entered(body: Node2D) -> void:
 		elif creature_type == CreatureType.PREY and body.creature_type == CreatureType.PREDATOR:
 			target = body
 		elif creature_type == CreatureType.SCAVENGER and body.current_energy < 10:
-			# Scavengers go for weak creatures
 			target = body
 
 func _on_body_exited(body: Node2D) -> void:
@@ -167,7 +156,7 @@ func _eat_target() -> void:
 		if target is Creature:
 			target.die()
 			current_energy = min(current_energy + eat_rate, max_energy)
-			_update_energy_display()
+			energy_changed.emit(current_energy)
 			_change_state(BehaviorState.EAT)
 		elif target is Player:
 			target.take_damage(10.0)
@@ -180,19 +169,12 @@ func die() -> void:
 	queue_free()
 
 func _spawn_food() -> void:
-	var food = preload("res://scripts/environment/food.gd").new()
+	var food = Food.new()
 	food.energy_value = current_energy * 0.5
 	get_tree().current_scene.add_child(food)
 	food.global_position = global_position
 
-func _update_energy_display() -> void:
-	energy_changed.emit(current_energy)
-	# Update sprite color based on energy
-	if sprite:
-		var t = current_energy / max_energy
-		sprite.modulate = Color(t, 1.0, t, 1.0)
-
 func set_resting() -> void:
 	_change_state(BehaviorState.REST)
 	current_energy += 5.0
-	_update_energy_display()
+	energy_changed.emit(current_energy)

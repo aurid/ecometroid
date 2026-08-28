@@ -2,11 +2,10 @@ extends CanvasLayer
 
 class_name GameUI
 
-@onready var energy_bar: TextureProgressBar = $EnergyBar
-@onready var energy_label: Label = $EnergyLabel
-@onready var population_label: Label = $PopulationLabel
-@onready var weather_label: Label = $WeatherLabel
-@onready var ecosystem_label: Label = $EcosystemLabel
+@onready var energy_label: Label = $VBoxContainer/EnergyLabel
+@onready var population_label: Label = $VBoxContainer/PopulationLabel
+@onready var weather_label: Label = $VBoxContainer/WeatherLabel
+@onready var ecosystem_label: Label = $VBoxContainer/EcosystemLabel
 @onready var message_label: Label = $MessageLabel
 
 var player: Player = null
@@ -33,10 +32,6 @@ func _ready() -> void:
 	_update_ui()
 
 func _update_ui() -> void:
-	if player and energy_bar:
-		energy_bar.value = player.energy
-		energy_bar.max_value = player.max_energy
-	
 	if player and energy_label:
 		energy_label.text = "Energy: %.0f/%.0f" % [player.energy, player.max_energy]
 	
@@ -58,15 +53,11 @@ func _update_ui() -> void:
 		ecosystem_label.text = "Ecosystem: " + status
 
 func _on_player_energy_changed(new_energy: float) -> void:
-	if energy_bar:
-		energy_bar.value = new_energy
-	
 	if energy_label and player:
 		energy_label.text = "Energy: %.0f/%.0f" % [new_energy, player.max_energy]
 
 func _on_player_died() -> void:
 	show_message("You died! The ecosystem continues...")
-	# Could trigger game over or respawn logic here
 
 func _on_population_changed(predators: int, prey: int, scavengers: int) -> void:
 	if population_label:
@@ -94,7 +85,6 @@ func show_message(text: String) -> void:
 		message_label.text = text
 		message_label.modulate.a = 1.0
 		
-		# Fade out message after 3 seconds
 		var tween = create_tween()
 		tween.tween_interval(3.0)
 		tween.tween_property(message_label, "modulate:a", 0.0, 1.0)
