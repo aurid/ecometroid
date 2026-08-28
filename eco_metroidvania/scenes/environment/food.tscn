@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_file major="4" minor="2">
+  <node name="Food" type="Area2D">
+    <property name="script" type="Script" resource_path="res://scripts/environment/food.gd"/>
+    <property name="collision_layer" value="4"/>
+    <property name="collision_mask" value="3"/>
+    
+    <node name="Sprite2D" type="Sprite2D">
+      <property name="modulate" type="Color">1, 1, 1, 1</property>
+      <property name="texture" type="Null"/>
+    </node>
+    
+    <node name="CollisionShape2D" type="CollisionShape2D">
+      <property name="shape" type="CircleShape2D">
+        <resource local_to_scene="false">
+          <property name="radius" type="float">16</property>
+        </resource>
+      </property>
+    </node>
+    
+    <node name="TimerLabel" type="Label">
+      <property name="offset_left" type="float">-20</property>
+      <property name="offset_top" type="float">-20</property>
+      <property name="offset_right" type="float">20</property>
+      <property name="offset_bottom" type="float">0</property>
+      <property name="horizontal_alignment" type="int">1</property>
+      <property name="text" type="String">30.0</property>
+      <property name="visible" type="bool">true</property>
+    </node>
+  </node>
+</resource_file>
